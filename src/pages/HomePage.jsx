@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { PostCard } from '../components/PostCard';
+import { da } from 'date-fns/locale';
 
 export function HomePage() {
   const domain = import.meta.env.VITE_WORDPRESS_URL;
@@ -30,12 +31,14 @@ export function HomePage() {
         const response = await fetch(`${domain}/?per_page=9&page=${page}&_embed`);
 
         if (!response.ok) throw new Error('Failed to fetch posts');
-        
-        const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
+
+        const resData = await response.json();
+
+        let data = JSON.parse(resData.result);
+
+        const totalPages = parseInt(resData.totalPage || '1');
         setHasMore(page < totalPages);
 
-        const data = await response.json();
-                
         // If page is 1, reset the posts to avoid duplicates
         setPosts(prevPosts => page === 1 ? data : [...prevPosts, ...data]);
       } catch (err) {
@@ -63,7 +66,8 @@ export function HomePage() {
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {posts.map((post, index) => {
+        {
+        posts.map((post, index) => {
           if (posts.length === index + 1) {
             return <div key={post.id} ref={lastPostRef}><PostCard post={post} /></div>;
           }

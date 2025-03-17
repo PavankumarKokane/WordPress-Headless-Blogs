@@ -27,7 +27,7 @@ export function HomePage() {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${domain}/wp-json/wp/v2/posts?per_page=9&page=${page}&_embed`);
+        const response = await fetch(`${domain}/?per_page=9&page=${page}&_embed`);
 
         if (!response.ok) throw new Error('Failed to fetch posts');
         

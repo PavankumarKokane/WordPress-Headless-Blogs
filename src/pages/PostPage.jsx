@@ -16,7 +16,7 @@ export function PostPage() {
     const fetchPost = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${domain}/wp-json/wp/v2/posts/${id}?_embed`);
+        const response = await fetch(`${domain}/post/${id}`);
         if (!response.ok) throw new Error('Failed to fetch post');
         const data = await response.json();
         setPost(data);
